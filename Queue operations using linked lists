@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int data;
+  struct Node *next;
+} Node;
+
+typedef struct {
+  Node *front, *rear;
+} LinkedListQueue;
+
+void initializeQueue(LinkedListQueue *queue) {
+  queue->front = queue->rear = NULL;
+}
+
+int isEmpty(LinkedListQueue *queue) {
+  return queue->front == NULL;
+}
+
+void enqueue(LinkedListQueue *queue, int item) {
+  Node *new_node = (Node *)malloc(sizeof(Node));
+  new_node->data = item;
+  new_node->next = NULL;
+
+  if (isEmpty(queue)) {
+    queue->front = queue->rear = new_node;
+  } else {
+    queue->rear->next = new_node;
+    queue->rear = new_node;
+  }
+}
+
+int dequeue(LinkedListQueue *queue) {
+  if (isEmpty(queue)) {
+    printf("Queue Underflow\n");
+    return -1;
+  }
+  Node *temp = queue->front;
+  int item = temp->data;
+  queue->front = queue->front->next;
+  free(temp);
+  if (queue->front == NULL) {
+    queue->rear = NULL;
+  }
+  return item;
+}
+
+void display(LinkedListQueue *queue) {
+  Node *temp = queue->front;
+  while (temp != NULL) {
+    printf("%d ", temp->data);
+    temp = temp->next;
+  }
+  printf("\n");
+}
+
+int main() {
+  LinkedListQueue queue;
+  initializeQueue(&queue);
+
+  enqueue(&queue, 10);
+  enqueue(&queue, 20);
+  enqueue(&queue, 30);
+
+  display(&queue);  // Output: 10 20 30
+
+  printf("Dequeued element: %d\n", dequeue(&queue));  // Output: 10
+
+  display(&queue);  // Output: 20 30
+
+  return 0;
+}
