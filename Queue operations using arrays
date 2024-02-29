@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 100
+
+typedef struct {
+  int data[MAX_SIZE];
+  int front, rear;
+} ArrayQueue;
+
+void initializeQueue(ArrayQueue *queue) {
+  queue->front = queue->rear = -1;
+}
+
+int isEmpty(ArrayQueue *queue) {
+  return queue->front == -1;
+}
+
+int isFull(ArrayQueue *queue) {
+  return queue->rear == MAX_SIZE - 1;
+}
+
+void enqueue(ArrayQueue *queue, int item) {
+  if (isFull(queue)) {
+    printf("Queue Overflow\n");
+    return;
+  }
+  if (isEmpty(queue)) {
+    queue->front = 0;
+  }
+  queue->rear++;
+  queue->data[queue->rear] = item;
+}
+
+int dequeue(ArrayQueue *queue) {
+  if (isEmpty(queue)) {
+    printf("Queue Underflow\n");
+    return -1;
+  }
+  int item = queue->data[queue->front];
+  queue->front++;
+  if (queue->front > queue->rear) {
+    initializeQueue(queue);
+  }
+  return item;
+}
+
+void display(ArrayQueue *queue) {
+  if (isEmpty(queue)) {
+    printf("Queue is empty\n");
+    return;
+  }
+  for (int i = queue->front; i <= queue->rear; i++) {
+    printf("%d ", queue->data[i]);
+  }
+  printf("\n");
+}
+
+int main() {
+  ArrayQueue queue;
+  initializeQueue(&queue);
+
+  enqueue(&queue, 10);
+  enqueue(&queue, 20);
+  enqueue(&queue, 30);
+
+  display(&queue);  // Output: 10 20 30
+
+  printf("Dequeued element: %d\n", dequeue(&queue));  // Output: 10
+
+  display(&queue);  // Output: 20 30
+
+  return 0;
+}
